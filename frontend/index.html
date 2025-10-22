@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HotelChain - Reservasi Hotel</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-50 text-gray-900 font-sans">
+  <div class="max-w-4xl mx-auto p-6">
+    <h1 class="text-3xl font-bold mb-6 text-center">🏨 HotelChain - Reservasi Hotel</h1>
+
+    <div class="flex justify-between mb-6">
+      <button id="connectButton" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
+        Connect Wallet
+      </button>
+      <span id="account" class="text-gray-700"></span>
+    </div>
+    <div class="container mx-auto mt-8 px-4">
+      <h2 class="text-2xl font-bold mb-4">🏨 Daftar Kamar</h2>
+      <div id="rooms" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+    
+      <h2 class="text-2xl font-bold mt-8 mb-4">🧾 Reservasi Saya</h2>
+      <div id="myReservations" class="space-y-4"></div>
+    </div>
+  </div>
+  
+
+
+  <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
