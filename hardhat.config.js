@@ -1,6 +1,5 @@
 require('@nomiclabs/hardhat-ethers');
-
-require("@nomicfoundation/hardhat-toolbox");
+// require("@nomicfoundation/hardhat-toolbox");
 
 // Import semua task custom
 require("./tasks/cekSaldo.js");
@@ -16,7 +15,6 @@ module.exports = {
     },
   },
 };
-
 
 module.exports = {
   solidity: '0.8.19',
