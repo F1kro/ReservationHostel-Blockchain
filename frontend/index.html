@@ -3,7 +3,10 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>StayChain - Hotel Reservation</title>
+  <title>HotelChain - Hotel Reservation</title>
+
+  <!-- Poppins font -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
 
   <!-- Tailwind -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -16,130 +19,166 @@
   <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
 
   <style>
+    :root { --page-font: 'Poppins', Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; }
+    body { font-family: var(--page-font); }
     .truncate-addr { max-width: 12rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    body { font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; }
   </style>
 </head>
-<body class="bg-gray-900 text-gray-100">
-  <div class="min-h-screen flex">
-    <!-- SIDEBAR -->
-    <aside class="w-64 bg-gray-900 border-r border-gray-800 p-6 hidden md:block">
-      <div class="mb-8 flex items-center gap-3">
-        <div class="w-10 h-10 bg-blue-600 rounded flex items-center justify-center font-bold">SC</div>
-        <div>
-          <div class="text-lg font-semibold">StayChain</div>
-          <div class="text-xs text-gray-400">v1.0.0 - Blockchain</div>
-        </div>
-      </div>
-
-      <nav class="space-y-2">
-        <button id="menuDashboard" class="w-full text-left px-3 py-2 rounded flex items-center gap-3 bg-gray-800">
-          <span>Dashboard</span>
-        </button>
-        <button id="menuRooms" class="w-full text-left px-3 py-2 rounded flex items-center gap-3 hover:bg-gray-800">Daftar Ruangan</button>
-        <button id="menuHistory" class="w-full text-left px-3 py-2 rounded flex items-center gap-3 hover:bg-gray-800">Riwayat Pemesanan</button>
-        <button id="menuAbout" class="w-full text-left px-3 py-2 rounded flex items-center gap-3 hover:bg-gray-800">About Us</button>
-      </nav>
-
-      <div class="mt-6 text-xs text-gray-500">Mode <span id="modeLabel">Guest</span></div>
-    </aside>
-
-    <!-- MAIN -->
-    <div class="flex-1">
-      <!-- topbar -->
-      <div class="flex items-center justify-between px-6 py-4 border-b border-gray-800">
-        <div>
-          <div id="welcomeTitle" class="text-lg font-semibold">Selamat Datang, Guest Dashboard</div>
-          <div id="welcomeSub" class="text-xs text-gray-400">Guest Dashboard</div>
-        </div>
-
-        <div class="flex items-center gap-3">
-          <button id="themeToggle" class="p-2 rounded bg-gray-800">🌙</button>
-          <div id="navProfileWrapper" class="relative hidden">
-            <button id="navAvatar" class="w-10 h-10 bg-blue-600 rounded-full">U</button>
-            <div id="navDrop" class="hidden absolute right-0 mt-2 w-56 bg-gray-900 border border-gray-800 rounded shadow py-2">
-              <div class="px-3 py-2 text-sm">
-                <div id="dropAddr" class="truncate-addr"></div>
-                <div class="text-xs text-gray-400">Balance: <span id="dropBal">-</span> ETH</div>
-              </div>
-              <div class="border-t border-gray-800"></div>
-              <button id="logoutBtn" class="w-full text-left px-3 py-2 hover:bg-gray-800">Logout</button>
-            </div>
-          </div>
-
-          <button id="connectBtn" class="bg-blue-500 px-4 py-2 rounded text-black font-medium">Connect</button>
-        </div>
-      </div>
-
-      <!-- content container -->
-      <main id="content" class="p-6">
-        <!-- DASHBOARD -->
-        <section id="pageDashboard" class="">
-          <!-- hero card -->
-          <div class="bg-gradient-to-r from-slate-800 to-slate-900 rounded-lg p-6 mb-6 border border-gray-800">
-            <div class="flex items-center justify-between">
-              <div>
-                <h2 class="text-2xl font-bold">StayChain Hotel Reservation</h2>
-                <p class="text-gray-400 mt-1">Platform pemesanan hotel berbasis blockchain yang aman dan transparan.</p>
-              </div>
-              <img src="/mnt/data/dashboardAdmin.png" alt="hero" class="w-44 h-24 object-cover rounded" />
-            </div>
-          </div>
-
-          <!-- metrics -->
-          <div class="grid grid-cols-4 gap-4 mb-6">
-            <div class="bg-gray-800 p-4 rounded border border-gray-800">
-              <div class="text-sm text-gray-400">Total Ruangan</div>
-              <div id="metricRooms" class="text-xl font-bold">0</div>
-            </div>
-            <div class="bg-gray-800 p-4 rounded border border-gray-800">
-              <div class="text-sm text-gray-400">Pemesanan Aktif</div>
-              <div id="metricActive" class="text-xl font-bold">0</div>
-            </div>
-            <div class="bg-gray-800 p-4 rounded border border-gray-800">
-              <div class="text-sm text-gray-400">Selesai Checkout</div>
-              <div id="metricDone" class="text-xl font-bold">0</div>
-            </div>
-            <div class="bg-gray-800 p-4 rounded border border-gray-800">
-              <div class="text-sm text-gray-400">Total Pendapatan</div>
-              <div id="metricRevenue" class="text-xl font-bold">Rp 0</div>
-            </div>
-          </div>
-
-          <!-- featured rooms -->
+<body class="bg-white text-gray-900 dark:bg-gray-900 dark:text-gray-100">
+  <div class="min-h-screen flex flex-col">
+    <div class="flex-1 flex">
+      <!-- SIDEBAR -->
+      <aside class="w-64 bg-white border-r border-gray-200 p-6 hidden md:block dark:bg-gray-900 dark:border-gray-800">
+        <div class="mb-8 flex items-center gap-3">
+          <div class="w-10 h-10 bg-blue-600 rounded flex items-center justify-center font-bold text-black">HC</div>
           <div>
-            <h3 class="text-lg font-semibold mb-3">Ruangan Unggulan</h3>
-            <div id="roomsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"></div>
+            <div class="text-lg font-semibold">HotelChain</div>
+            <div class="text-xs text-gray-500 dark:text-gray-400">v1.0.0 - Blockchain</div>
           </div>
-        </section>
+        </div>
 
-        <!-- ROOMS PAGE -->
-        <section id="pageRooms" class="hidden">
-          <div class="flex justify-between items-center mb-4">
-            <h2 class="text-xl font-semibold">Daftar Ruangan</h2>
-            <div class="flex gap-3">
-              <input id="searchRoom" placeholder="Cari ruangan..." class="px-3 py-2 rounded bg-gray-800 border border-gray-800" />
-              <button id="btnAddRoom" class="bg-blue-600 px-3 py-2 rounded hidden">+ Tambah Ruangan</button>
+        <nav class="space-y-2">
+          <button id="menuDashboard" class="w-full text-left px-3 py-2 rounded flex items-center gap-3 bg-gray-100 dark:bg-gray-800">
+            <span>Dashboard</span>
+          </button>
+          <button id="menuRooms" class="w-full text-left px-3 py-2 rounded flex items-center gap-3 hover:bg-gray-100 dark:hover:bg-gray-800">Daftar Ruangan</button>
+          <button id="menuHistory" class="w-full text-left px-3 py-2 rounded flex items-center gap-3 hover:bg-gray-100 dark:hover:bg-gray-800">Riwayat Pemesanan</button>
+          <button id="menuAbout" class="w-full text-left px-3 py-2 rounded flex items-center gap-3 hover:bg-gray-100 dark:hover:bg-gray-800">About Us</button>
+        </nav>
+
+        <div class="mt-6 text-xs text-gray-500 dark:text-gray-400">Mode <span id="modeLabel">Guest</span></div>
+      </aside>
+
+      <!-- MAIN -->
+      <div class="flex-1">
+        <!-- topbar -->
+        <div class="flex items-center justify-between px-6 py-4 border-b border-gray-200 dark:border-gray-800">
+          <div>
+            <div id="welcomeTitle" class="text-lg font-semibold">Selamat Datang, Guest Dashboard</div>
+            <div id="welcomeSub" class="text-xs text-gray-500 dark:text-gray-400">Guest Dashboard</div>
+          </div>
+
+          <div class="flex items-center gap-3">
+            <button id="themeToggle" class="p-2 rounded bg-gray-100 dark:bg-gray-800">🌙</button>
+            <div id="navProfileWrapper" class="relative hidden">
+              <!-- avatar image (square) -->
+              <img id="navAvatarImg" src="assets/placeholder.png" alt="avatar" class="w-10 h-10 object-cover rounded-md border border-gray-200 dark:border-gray-800 cursor-pointer" />
+              <div id="navDrop" class="hidden absolute right-0 mt-2 w-72 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded shadow py-2">
+                <div class="px-3 py-2 text-sm">
+                  <div id="dropAddr" class="truncate-addr"></div>
+                  <div class="text-xs text-gray-500 dark:text-gray-400">Balance: <span id="dropBal">-</span> ETH</div>
+                  <div id="dropName" class="text-sm text-gray-900 dark:text-gray-100 mt-2">-</div>
+                  <div id="dropPhone" class="text-xs text-gray-500 dark:text-gray-400">Telp: -</div>
+                </div>
+                <div class="border-t border-gray-200 dark:border-gray-800"></div>
+                <div class="px-3 py-2">
+                  <button id="editProfileBtn" class="w-full text-left px-3 py-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded">Edit Profile</button>
+                  <button id="logoutBtn" class="w-full text-left px-3 py-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded mt-1">Logout</button>
+                </div>
+              </div>
             </div>
+
+            <button id="connectBtn" class="bg-blue-500 px-4 py-2 rounded text-black font-medium">Connect</button>
           </div>
+        </div>
 
-          <div id="roomsList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"></div>
-        </section>
+        <!-- content container -->
+        <main id="content" class="p-6">
+          <!-- DASHBOARD -->
+          <section id="pageDashboard" class="">
+            <!-- hero card -->
+            <div class="bg-gradient-to-r from-white to-gray-100 dark:from-slate-800 dark:to-slate-900 rounded-lg p-6 mb-6 border border-gray-200 dark:border-gray-800">
+              <div class="flex items-center justify-between">
+                <div>
+                  <h2 class="text-2xl font-bold">HotelChain Hotel Reservation</h2>
+                  <p class="text-gray-600 dark:text-gray-400 mt-1">Platform pemesanan hotel berbasis blockchain yang aman dan transparan.</p>
+                </div>
+                <img src="assets/dashboardAdmin.png" alt="hero" class="w-44 h-24 object-cover rounded" />
+              </div>
+            </div>
 
-        <!-- HISTORY PAGE -->
-        <section id="pageHistory" class="hidden">
-          <h2 class="text-xl font-semibold mb-4">Riwayat Pemesanan</h2>
-          <div id="historyTable" class="bg-gray-800 p-4 rounded border border-gray-800"></div>
-        </section>
+            <!-- metrics -->
+            <div class="grid grid-cols-4 gap-4 mb-6">
+              <div class="bg-gray-50 dark:bg-gray-800 p-4 rounded border border-gray-200 dark:border-gray-800">
+                <div class="text-sm text-gray-500 dark:text-gray-400">Total Ruangan</div>
+                <div id="metricRooms" class="text-xl font-bold">0</div>
+              </div>
+              <div class="bg-gray-50 dark:bg-gray-800 p-4 rounded border border-gray-200 dark:border-gray-800">
+                <div class="text-sm text-gray-500 dark:text-gray-400">Pemesanan Aktif</div>
+                <div id="metricActive" class="text-xl font-bold">0</div>
+              </div>
+              <div class="bg-gray-50 dark:bg-gray-800 p-4 rounded border border-gray-200 dark:border-gray-800">
+                <div class="text-sm text-gray-500 dark:text-gray-400">Selesai Checkout</div>
+                <div id="metricDone" class="text-xl font-bold">0</div>
+              </div>
+              <div class="bg-gray-50 dark:bg-gray-800 p-4 rounded border border-gray-200 dark:border-gray-800">
+                <div id="metricRevenueLabel" class="text-sm text-gray-500 dark:text-gray-400">Total Pendapatan</div>
+                <div id="metricRevenue" class="text-xl font-bold">ETH</div>
+              </div>
+            </div>
 
-        <!-- ABOUT -->
-        <section id="pageAbout" class="hidden">
-          <h2 class="text-xl font-semibold mb-4">About Us</h2>
-          <img src="/mnt/data/AboutUs.png" class="w-full max-h-44 object-cover rounded mb-4" alt="about" />
-          <p class="text-gray-400">StayChain adalah demo DApp...</p>
-        </section>
-      </main>
+            <!-- featured rooms -->
+            <div>
+              <h3 class="text-lg font-semibold mb-3">Ruangan Unggulan</h3>
+              <div id="roomsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"></div>
+            </div>
+          </section>
+
+          <!-- ROOMS PAGE -->
+          <section id="pageRooms" class="hidden">
+            <div class="flex justify-between items-center mb-4">
+              <h2 class="text-xl font-semibold">Daftar Ruangan</h2>
+              <div class="flex gap-3">
+                <input id="searchRoom" placeholder="Cari ruangan..." class="px-3 py-2 rounded bg-gray-50 border border-gray-200 dark:bg-gray-800 dark:border-gray-800" />
+                <button id="btnAddRoom" class="bg-blue-600 px-3 py-2 rounded hidden">+ Tambah Ruangan</button>
+              </div>
+            </div>
+
+            <div id="roomsList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"></div>
+          </section>
+
+          <!-- HISTORY PAGE -->
+          <section id="pageHistory" class="hidden">
+            <h2 class="text-xl font-semibold mb-4">Riwayat Pemesanan</h2>
+            <div id="historyTable" class="bg-gray-50 dark:bg-gray-800 p-4 rounded border border-gray-200 dark:border-gray-800"></div>
+          </section>
+
+          <!-- ABOUT -->
+          <section id="pageAbout" class="hidden">
+            <h2 class="text-xl font-semibold mb-4">About Us</h2>
+            <img src="assets/aboutus.jpg" class="w-full max-h-44 object-cover rounded mb-4" alt="about" />
+            <p class="text-gray-600 dark:text-gray-400">
+              Hotel Reservation App berbasis blockchain dibuat untuk memenuhi tugas besar mata kuliah BLOCKCHAIN. Aplikasi ini mendemonstrasikan penggunaan smart contract untuk manajemen kamar dan reservasi, memberikan pengalaman transparan dan terdesentralisasi.
+            </p>
+
+            <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6 justify-center">
+              <!-- profile card Fiqro (vertikal) -->
+              <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-800 rounded p-6 flex flex-col items-center gap-4 max-w-sm mx-auto">
+                <img src="assets/opik.jpeg" onerror="this.onerror=null;this.src='assets/placeholder.png';" class="w-40 h-40 object-cover rounded-md" alt="Fiqro">
+                <div class="text-center">
+                  <div class="font-semibold text-lg">Fiqro Najiah</div>
+                  <div class="text-sm text-gray-500 dark:text-gray-400 mt-1">F1D02310051</div>
+                </div>
+              </div>
+
+              <!-- profile card Juan (vertikal) -->
+              <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-800 rounded p-6 flex flex-col items-center gap-4 max-w-sm mx-auto">
+                <img src="assets/juan.jpeg" onerror="this.onerror=null;this.src='assets/placeholder.png';" class="w-40 h-40 object-cover rounded-md" alt="Juan">
+                <div class="text-center">
+                  <div class="font-semibold text-lg">Juan Jordan Anugrah</div>
+                  <div class="text-sm text-gray-500 dark:text-gray-400 mt-1">F1D02310061</div>
+                </div>
+              </div>
+            </div>
+          </section>
+        </main>
+      </div>
     </div>
+
+    <!-- Sticky footer -->
+    <footer class="w-full bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 p-3 text-center">
+      <div class="text-sm text-gray-600 dark:text-gray-400">Made with effort by Juan &amp; Opik</div>
+    </footer>
   </div>
 
   <script src="app.js"></script>
